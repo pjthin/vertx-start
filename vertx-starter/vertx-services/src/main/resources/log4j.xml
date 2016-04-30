@@ -9,7 +9,7 @@
 	</appender>
 
 	<logger name="fr.pjthin.vertx" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="console" />
 	</logger>
 

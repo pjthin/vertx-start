@@ -52,6 +52,11 @@
 				<artifactId>commons-collections</artifactId>
 				<version>3.2.1</version>
 			</dependency>
+			<dependency>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>0.9.10</version>
+			</dependency>
 			<!-- Vertx -->
 			<dependency>
 				<groupId>io.vertx</groupId>
