@@ -19,30 +19,17 @@ import fr.pjthin.vertx.service.data.User;
  * 
  * @author Pidji
  */
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends AbstractDaoSupport implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    private Vertx vertx;
-
     public UserDaoImpl(Vertx vertx) {
-        this.vertx = vertx;
+        super(vertx);
     }
 
     @Override
-    public void save(final User newUser, Handler<AsyncResult<Void>> complete) {
-        vertx.executeBlocking(res -> {
-            try {
-                LOGGER.debug("start save user: " + newUser.toJson());
-                // save in DB
-                // TODO implement db-save
-                Thread.sleep(10000);
-                LOGGER.debug("end save user: " + newUser.toJson());
-                res.complete();
-            } catch (Exception e) {
-                res.fail(e);
-            }
-        }, complete);
+    public void save(final User newUser, Handler<AsyncResult<String>> complete) {
+        mongoClient.save("users", newUser.toJson(), complete);
     }
 
     @Override

@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.function.Function;
 import io.vertx.serviceproxy.ProxyHelper;
-import fr.pjthin.vertx.service.dao.RegisteredServiceProxy;
 import fr.pjthin.vertx.service.dao.UserDao;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -60,7 +59,7 @@ public class UserDaoVertxEBProxy implements UserDao {
     this._options = options;
   }
 
-  public void save(User newUser, Handler<AsyncResult<Void>> complete) {
+  public void save(User newUser, Handler<AsyncResult<String>> complete) {
     if (closed) {
       complete.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
@@ -69,7 +68,7 @@ public class UserDaoVertxEBProxy implements UserDao {
     _json.put("newUser", newUser == null ? null : newUser.toJson());
     DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
     _deliveryOptions.addHeader("action", "save");
-    _vertx.eventBus().<Void>send(_address, _json, _deliveryOptions, res -> {
+    _vertx.eventBus().<String>send(_address, _json, _deliveryOptions, res -> {
       if (res.failed()) {
         complete.handle(Future.failedFuture(res.cause()));
       } else {

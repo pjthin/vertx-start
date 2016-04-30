@@ -6,9 +6,7 @@
 		<artifactId>vertx-starter</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>fr.pjthin</groupId>
 	<artifactId>vertx-services</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>vertx-services</name>
 	<url>http://maven.apache.org</url>
@@ -61,9 +59,18 @@
 			<artifactId>vertx-codegen</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-mongo-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.vert-x</groupId>
 			<artifactId>vertx-junit-annotations</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<!-- Database -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

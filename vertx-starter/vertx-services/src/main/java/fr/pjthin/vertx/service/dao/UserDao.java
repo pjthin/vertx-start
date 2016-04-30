@@ -51,7 +51,7 @@ public interface UserDao {
      * @param complete
      *            handler when save has been done
      */
-    void save(User newUser, Handler<AsyncResult<Void>> complete);
+    void save(User newUser, Handler<AsyncResult<String>> complete);
 
     /**
      * Close method

@@ -19,6 +19,7 @@ public class Main {
         vertx.deployVerticle(container, complete -> {
             if (complete.succeeded()) {
                 LOGGER.info("Services started.");
+                consumeServices(vertx);
             } else {
                 LOGGER.error("Failed starting services: " + complete.cause().getMessage(), complete.cause());
             }
@@ -26,11 +27,16 @@ public class Main {
     }
 
     private static void consumeServices(Vertx vertx) {
-        LOGGER.info("Succeed! 1");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         UserDao dao = UserDao.getProxy(vertx);
         dao.save(createUser(), done -> {
             if (done.succeeded()) {
-                LOGGER.info("Succeed! 2");
+                LOGGER.info("Succeed : " + done.result());
             } else {
                 LOGGER.error(done.cause().getMessage(), done.cause());
             }

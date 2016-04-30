@@ -68,19 +68,20 @@ public class ServiceContainer extends AbstractVerticle {
                                 throw new ServiceContainerException(
                                         String.format(
                                                 "[%s] No or too many method signature with @%s %s<JsonObject> name(%s param) found",
-                                                clazz, DeployServiceProxyMethod.class, MessageConsumer.class,
-                                                Vertx.class));
+                                                clazz.getSimpleName(), DeployServiceProxyMethod.class,
+                                                MessageConsumer.class, Vertx.class));
                             }
                             // should be only one now
                             methods.stream().forEach((method) -> {
                                 try {
-                                    LOGGER.info(String.format("[%s] service deploying...", clazz));
+                                    LOGGER.info(String.format("[%s] service deploying...", clazz.getSimpleName()));
                                     // call deploy method and store result
                                     deployedServices.add((MessageConsumer<JsonObject>) method.invoke(null, vertx));
                                     loggingMethodsService(clazz);
-                                    LOGGER.info(String.format("[%s] service deployed.", clazz));
+                                    LOGGER.info(String.format("[%s] service deployed.", clazz.getSimpleName()));
                                 } catch (Exception e) {
-                                    throw new ServiceContainerException("[%s] failed invoking deployed method", e);
+                                    throw new ServiceContainerException(String.format(
+                                            "[%s] failed invoking deployed method", clazz.getSimpleName()), e);
                                 }
                             });
                         });
@@ -96,26 +97,8 @@ public class ServiceContainer extends AbstractVerticle {
         ReflectionUtils.getMethods(clazz, (method) -> {
             return Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers());
         }).stream().forEach((method) -> {
-            // TODO work log display
-                LOGGER.info(String.format("[%s] provide : %s", clazz, method.toGenericString()));
-            });
-    }
-
-    @Override
-    public void stop(Future<Void> stopFuture) throws Exception {
-        try {
-            // unregister all services
-            deployedServices.stream().forEach((consumer) -> {
-                if (consumer.isRegistered()) {
-                    consumer.unregister();
-                }
-            });
-            // TODO wait all unregister before complete
-            Thread.sleep(500);
-            stopFuture.complete();
-        } catch (Exception e) {
-            stopFuture.fail(e);
-        }
+            LOGGER.info(String.format("[%s] provide : %s(..)", clazz.getSimpleName(), method.getName()));
+        });
     }
 
     @Override

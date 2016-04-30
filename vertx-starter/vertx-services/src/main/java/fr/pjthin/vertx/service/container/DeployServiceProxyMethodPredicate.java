@@ -13,8 +13,14 @@ public class DeployServiceProxyMethodPredicate implements Predicate<Method> {
     @Override
     public boolean apply(Method method) {
         if (method.isAnnotationPresent(DeployServiceProxyMethod.class)) {
-            return Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 1
-                    && Vertx.class.equals(method.getParameters()[0].getType())
+            return
+            // static method
+            Modifier.isStatic(method.getModifiers())
+            // one param
+                    && method.getParameterCount() == 1
+                    // object Vertx
+                    && Vertx.class.equals(method.getParameterTypes()[0])
+                    // and return MessageConsumer
                     && MessageConsumer.class.equals(method.getReturnType());
         }
         return false;
