@@ -12,6 +12,7 @@ public class Launcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 
     public static void main(String[] args) {
+        // FIXME find another way for loading configuration (only work with eclipse)
         VertxOptions vertxOptions = new VertxOptions(
                 ConfigurationUtils.loadJsonFromClassPath(ConfigurationUtils.CLUSTER_PATH))
                 .setClusterManager(new HazelcastClusterManager());
@@ -28,6 +29,7 @@ public class Launcher {
     private static void startServices(final Vertx vertx) {
         LOGGER.info("Starting services...");
 
+        // FIXME find another way for loading configuration (only work with eclipse)
         ConfigurationUtils.loadJsonFromClassPathAndPutConfiguration(vertx, ConfigurationUtils.MONGODB_PATH,
                 ConfigurationUtils.MONGODB);
 
