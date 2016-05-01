@@ -79,16 +79,7 @@
 	</dependencies>
 	<build>
 		<finalName>vertx-services</finalName>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>**/*.xml</include>
-					<include>**/*.json</include>
-					<include>**/*.properties</include>
-				</includes>
-			</resource>
-		</resources>
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
