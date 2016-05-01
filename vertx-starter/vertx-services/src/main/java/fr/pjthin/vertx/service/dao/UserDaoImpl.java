@@ -7,7 +7,7 @@ import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.pjthin.vertx.service.Main;
+import fr.pjthin.vertx.service.Launcher;
 import fr.pjthin.vertx.service.data.User;
 
 /**
@@ -21,7 +21,7 @@ import fr.pjthin.vertx.service.data.User;
  */
 public class UserDaoImpl extends AbstractDaoSupport implements UserDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 
     public UserDaoImpl(Vertx vertx) {
         super(vertx);
