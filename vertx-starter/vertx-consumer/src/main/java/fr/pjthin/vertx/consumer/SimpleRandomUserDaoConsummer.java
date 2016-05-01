@@ -21,19 +21,38 @@ public class SimpleRandomUserDaoConsummer {
         Vertx.clusteredVertx(new VertxOptions().setClustered(true).setClusterManager(new HazelcastClusterManager()),
                 resultHandler -> {
                     if (resultHandler.succeeded()) {
+
                         Vertx vertx = resultHandler.result();
-                        UserDao dao = UserDao.getProxy(vertx);
-                        dao.save(generateRandomUser(), complete -> {
-                            if (complete.succeeded()) {
-                                LOGGER.info("user saved with id=" + complete.result());
-                            } else {
-                                LOGGER.error(complete.cause().getMessage(), complete.cause());
-                            }
-                        });
-                    } else {
-                        LOGGER.error(resultHandler.cause().getMessage(), resultHandler.cause());
-                    }
+                        // get a proxy everywhere on the evenbus
+                UserDao dao = UserDao.getProxy(vertx);
+
+                // every 500ms save a random user
+                final long periodicId = vertx.setPeriodic(500, h -> {
+                    dao.save(generateRandomUser(), complete -> {
+                        if (complete.succeeded()) {
+                            LOGGER.info("user saved with id=" + complete.result());
+                        } else {
+                            LOGGER.error(complete.cause().getMessage(), complete.cause());
+                        }
+                    });
                 });
+
+                // after 10s cancel saving random user, show all inserted user, end vertx
+                vertx.setTimer(10000, h -> {
+                    vertx.cancelTimer(periodicId);
+                    dao.findAll(complete -> {
+                        if (complete.succeeded()) {
+                            complete.result().stream().map(User::toString).forEach(LOGGER::info);
+                        } else {
+                            LOGGER.error(complete.cause().getMessage(), complete.cause());
+                        }
+                        vertx.close();
+                    });
+                });
+            } else {
+                LOGGER.error(resultHandler.cause().getMessage(), resultHandler.cause());
+            }
+        });
     }
 
     private static Random R = new Random();
