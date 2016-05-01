@@ -37,7 +37,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
-import fr.pjthin.vertx.service.dao.RegisteredServiceProxy;
 import fr.pjthin.vertx.service.dao.UserDao;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
