@@ -62,9 +62,9 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-mongo-client</artifactId>
 		</dependency>
-			<dependency>
-				<groupId>io.vertx</groupId>
-				<artifactId>vertx-hazelcast</artifactId>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-hazelcast</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.vert-x</groupId>
@@ -79,29 +79,30 @@
 	</dependencies>
 	<build>
 		<finalName>vertx-services</finalName>
-
-		<pluginManagement>
-			<plugins>
-				<!-- Configure the execution of the compiler to execute the codegen processor -->
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>default-compile</id>
-							<configuration>
-								<annotationProcessors>
-									<annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>
-								</annotationProcessors>
-								<compilerArgs>
-									<arg>-AoutputDirectory=${project.basedir}/src/main</arg>
-								</compilerArgs>
-								<!-- uncomment next line to add generated vertx class into src project -->
-								<generatedSourcesDirectory>${project.basedir}/src/main/java</generatedSourcesDirectory>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.json</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>fr.pjthin.vertx.service.Launcher</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
