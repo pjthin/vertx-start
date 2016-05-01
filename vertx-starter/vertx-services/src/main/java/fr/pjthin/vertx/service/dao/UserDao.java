@@ -12,6 +12,8 @@ import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.serviceproxy.ProxyHelper;
 
+import java.util.List;
+
 /**
  * Dao.
  * 
@@ -52,6 +54,8 @@ public interface UserDao {
      *            handler when save has been done
      */
     void save(User newUser, Handler<AsyncResult<String>> complete);
+
+    void findAll(Handler<AsyncResult<List<User>>> complete);
 
     /**
      * Close method

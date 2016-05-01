@@ -37,6 +37,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
+import java.util.List;
 import fr.pjthin.vertx.service.dao.UserDao;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -122,6 +123,16 @@ public class UserDaoVertxProxyHandler extends ProxyHandler {
 
         case "save": {
           service.save(json.getJsonObject("newUser") == null ? null : new fr.pjthin.vertx.service.data.User(json.getJsonObject("newUser")), createHandler(msg));
+          break;
+        }
+        case "findAll": {
+          service.findAll(res -> {
+            if (res.failed()) {
+              msg.fail(-1, res.cause().getMessage());
+            } else {
+              msg.reply(new JsonArray(res.result().stream().map(User::toJson).collect(Collectors.toList())));
+            }
+         });
           break;
         }
         case "close": {

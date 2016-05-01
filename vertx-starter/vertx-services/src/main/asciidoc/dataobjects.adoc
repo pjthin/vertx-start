@@ -6,7 +6,7 @@
 ++++
  User POJO.
  <p>
- <b>WARNING!</b> if you modify this class you have to delete manually and re-generate  (mvn
+ <b>WARNING!</b> if you modify this class you have to delete manually and re-generate link (mvn
  compile) because the processor would not re-generate it if class already exists.
 ++++
 '''

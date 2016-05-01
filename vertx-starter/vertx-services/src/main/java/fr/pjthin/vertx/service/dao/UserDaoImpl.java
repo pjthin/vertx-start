@@ -1,8 +1,12 @@
 package fr.pjthin.vertx.service.dao;
 
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +39,24 @@ public class UserDaoImpl extends AbstractDaoSupport implements UserDao {
     }
 
     @Override
+    public void findAll(Handler<AsyncResult<List<User>>> complete) {
+        LOGGER.debug("findAll(..)");
+        mongoClient.find(
+                USER_COLLECTION,
+                User.ALL,
+                (h) -> {
+                    if (h.succeeded()) {
+                        complete.handle(Future.succeededFuture(h.result().stream().map((json) -> new User(json))
+                                .collect(Collectors.toList())));
+                    } else {
+                        complete.handle(Future.failedFuture(h.cause()));
+                    }
+                });
+    }
+
+    @Override
     public void close() {
         LOGGER.info("closing...");
     }
+
 }

@@ -16,6 +16,7 @@ import io.vertx.core.json.JsonObject;
 @DataObject(generateConverter = true, inheritConverter = true)
 public class User {
 
+    public static final JsonObject ALL = new JsonObject();
     private int id;
     private String login;
     private String cryptedPasswd;
@@ -39,6 +40,11 @@ public class User {
         JsonObject json = new JsonObject();
         UserConverter.toJson(this, json);
         return json;
+    }
+
+    @Override
+    public String toString() {
+        return toJson().toString();
     }
 
     public int getId() {

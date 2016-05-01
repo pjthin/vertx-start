@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.function.Function;
 import io.vertx.serviceproxy.ProxyHelper;
+import java.util.List;
 import fr.pjthin.vertx.service.dao.UserDao;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -73,6 +74,23 @@ public class UserDaoVertxEBProxy implements UserDao {
         complete.handle(Future.failedFuture(res.cause()));
       } else {
         complete.handle(Future.succeededFuture(res.result().body()));
+      }
+    });
+  }
+
+  public void findAll(Handler<AsyncResult<List<User>>> complete) {
+    if (closed) {
+      complete.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
+    }
+    JsonObject _json = new JsonObject();
+    DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
+    _deliveryOptions.addHeader("action", "findAll");
+    _vertx.eventBus().<JsonArray>send(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        complete.handle(Future.failedFuture(res.cause()));
+      } else {
+        complete.handle(Future.succeededFuture(res.result().body().stream().map(o -> o instanceof Map ? new User(new JsonObject((Map) o)) : new User((JsonObject) o)).collect(Collectors.toList())));
       }
     });
   }
