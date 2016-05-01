@@ -2,6 +2,7 @@
  // Single Cluster Settings
  "host" : "localhost",
  "port" : 27017,
+ "db_name" : "vertx-services-db",
 
  // Connection Pool Settings
  "maxPoolSize" : 50,
