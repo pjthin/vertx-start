@@ -85,7 +85,6 @@ public class ServiceContainer extends AbstractVerticle {
                                 }
                             });
                         });
-
             startFuture.complete();
         } catch (Exception e) {
             startFuture.fail(e);

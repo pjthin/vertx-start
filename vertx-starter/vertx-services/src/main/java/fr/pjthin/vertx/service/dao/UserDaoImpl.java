@@ -22,6 +22,7 @@ import fr.pjthin.vertx.service.data.User;
 public class UserDaoImpl extends AbstractDaoSupport implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
+    private static final String USER_COLLECTION = "users";
 
     public UserDaoImpl(Vertx vertx) {
         super(vertx);
@@ -29,7 +30,8 @@ public class UserDaoImpl extends AbstractDaoSupport implements UserDao {
 
     @Override
     public void save(final User newUser, Handler<AsyncResult<String>> complete) {
-        mongoClient.save("users", newUser.toJson(), complete);
+        LOGGER.debug(String.format("Saving %s", newUser.toJson()));
+        mongoClient.save(USER_COLLECTION, newUser.toJson(), complete);
     }
 
     @Override

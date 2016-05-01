@@ -1,0 +1,18 @@
+{
+// "eventLoopPoolSize" : ,
+// "workerPoolSize" : ,
+// "internalBlockingPoolSize" : ,
+	"clustered" : true,
+	"clusterHost" : "127.0.0.1",
+	"clusterPort" : 0
+// "clusterPublicHost" : "127.0.0.1",
+// "clusterPublicPort" : 0,
+// "clusterPingInterval" : ,
+// "clusterPingReplyInterval" : ,
+// "blockedThreadCheckInterval" : ,
+// "maxEventLoopExecuteTime" : ,
+// "quorumSize" : ,
+// "haGroup" : ,
+// "warningExceptionTime" : ,
+// "" : ,
+}

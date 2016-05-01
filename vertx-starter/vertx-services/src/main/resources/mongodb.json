@@ -1,0 +1,15 @@
+{
+ // Single Cluster Settings
+ "host" : "localhost",
+ "port" : 27017,
+
+ // Connection Pool Settings
+ "maxPoolSize" : 50,
+ "minPoolSize" : 25,
+ "maxIdleTimeMS" : 300000,
+ "maxLifeTimeMS" : 3600000,
+ "waitQueueMultiple" : 10,
+ "waitQueueTimeoutMS" : 10000,
+ "maintenanceFrequencyMS" : 2000,
+ "maintenanceInitialDelayMS" : 500
+}
