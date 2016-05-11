@@ -1,8 +1,8 @@
 package fr.pjthin.vertx.consumer;
 
-import fr.pjthin.vertx.service.constante.Gender;
-import fr.pjthin.vertx.service.dao.UserDao;
-import fr.pjthin.vertx.service.data.User;
+import fr.pjthin.vertx.client.UserDao;
+import fr.pjthin.vertx.client.data.Gender;
+import fr.pjthin.vertx.client.data.User;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;

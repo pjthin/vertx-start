@@ -10,6 +10,9 @@
 	<packaging>jar</packaging>
 	<name>vertx-services</name>
 	<url>http://maven.apache.org</url>
+	<properties>
+		<fr.pjthin.vertx.client.version>0.0.1-SNAPSHOT</fr.pjthin.vertx.client.version>
+	</properties>
 	<dependencies>
 		<!-- Logger -->
 		<dependency>
@@ -52,14 +55,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
-			<artifactId>vertx-service-proxy</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-codegen</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
 			<artifactId>vertx-mongo-client</artifactId>
 		</dependency>
 		<dependency>
@@ -75,6 +70,12 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver</artifactId>
+		</dependency>
+		<!-- My libraries -->
+		<dependency>
+			<groupId>fr.pjthin</groupId>
+			<artifactId>vertx-client</artifactId>
+			<version>${fr.pjthin.vertx.client.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

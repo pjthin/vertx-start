@@ -1,0 +1,23 @@
+= Cheatsheets
+
+[[User]]
+== User
+
+++++
+ User POJO.
+ <p>
+ <b>WARNING!</b> if you modify this class you have to delete manually and re-generate  (mvn
+ compile) because the processor would not re-generate it if class already exists.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[cryptedPasswd]]`cryptedPasswd`|`String`|-
+|[[gender]]`gender`|`link:enums.html#Gender[Gender]`|-
+|[[id]]`id`|`Number (int)`|-
+|[[login]]`login`|`String`|-
+|===
+

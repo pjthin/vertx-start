@@ -154,5 +154,6 @@
 	<modules>
 		<module>vertx-services</module>
 		<module>vertx-consumer</module>
+		<module>vertx-client</module>
 	</modules>
 </project>

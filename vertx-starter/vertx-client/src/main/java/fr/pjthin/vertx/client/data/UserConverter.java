@@ -14,15 +14,15 @@
  * under the License.
  */
 
-package fr.pjthin.vertx.service.data;
+package fr.pjthin.vertx.client.data;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.JsonArray;
 
 /**
- * Converter for {@link fr.pjthin.vertx.service.data.User}.
+ * Converter for {@link fr.pjthin.vertx.client.data.User}.
  *
- * NOTE: This class has been automatically generated from the {@link fr.pjthin.vertx.service.data.User} original class using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link fr.pjthin.vertx.client.data.User} original class using Vert.x codegen.
  */
 public class UserConverter {
 
@@ -31,7 +31,7 @@ public class UserConverter {
       obj.setCryptedPasswd((String)json.getValue("cryptedPasswd"));
     }
     if (json.getValue("gender") instanceof String) {
-      obj.setGender(fr.pjthin.vertx.service.constante.Gender.valueOf((String)json.getValue("gender")));
+      obj.setGender(fr.pjthin.vertx.client.data.Gender.valueOf((String)json.getValue("gender")));
     }
     if (json.getValue("id") instanceof Number) {
       obj.setId(((Number)json.getValue("id")).intValue());

@@ -11,8 +11,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.pjthin.vertx.client.UserDao;
+import fr.pjthin.vertx.client.UserDaoVertxEBProxy;
+import fr.pjthin.vertx.client.UserDaoVertxProxyHandler;
+import fr.pjthin.vertx.client.data.User;
 import fr.pjthin.vertx.service.Launcher;
-import fr.pjthin.vertx.service.data.User;
+import fr.pjthin.vertx.service.container.DeployServiceProxy;
 
 /**
  * Dao implementation.
@@ -23,6 +27,7 @@ import fr.pjthin.vertx.service.data.User;
  * 
  * @author Pidji
  */
+@DeployServiceProxy
 public class UserDaoImpl extends AbstractDaoSupport implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);

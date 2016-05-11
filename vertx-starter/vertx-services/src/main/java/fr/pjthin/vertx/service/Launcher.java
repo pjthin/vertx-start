@@ -32,7 +32,6 @@ public class Launcher {
         // FIXME find another way for loading configuration (only work with eclipse)
         ConfigurationUtils.loadJsonFromClassPathAndPutConfiguration(vertx, ConfigurationUtils.MONGODB_PATH,
                 ConfigurationUtils.MONGODB);
-
         ServiceContainer container = new ServiceContainer("fr.pjthin.vertx.service");
         vertx.deployVerticle(container, complete -> {
             if (complete.succeeded()) {

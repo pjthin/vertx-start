@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package fr.pjthin.vertx.service.dao;
+package fr.pjthin.vertx.client;
 
-import fr.pjthin.vertx.service.dao.UserDao;
+import fr.pjthin.vertx.client.UserDao;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.Future;
@@ -31,13 +31,11 @@ import java.util.stream.Collectors;
 import java.util.function.Function;
 import io.vertx.serviceproxy.ProxyHelper;
 import java.util.List;
-import fr.pjthin.vertx.service.dao.UserDao;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
-import fr.pjthin.vertx.service.data.User;
+import fr.pjthin.vertx.client.UserDao;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.Handler;
+import fr.pjthin.vertx.client.data.User;
 
 /*
   Generated Proxy code - DO NOT EDIT

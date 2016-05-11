@@ -1,6 +1,5 @@
-package fr.pjthin.vertx.service.data;
+package fr.pjthin.vertx.client.data;
 
-import fr.pjthin.vertx.service.constante.Gender;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.core.json.JsonObject;

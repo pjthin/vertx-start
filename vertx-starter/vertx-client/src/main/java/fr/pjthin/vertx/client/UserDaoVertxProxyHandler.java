@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package fr.pjthin.vertx.service.dao;
+package fr.pjthin.vertx.client;
 
-import fr.pjthin.vertx.service.dao.UserDao;
+import fr.pjthin.vertx.client.UserDao;
 import io.vertx.core.Vertx;
 import io.vertx.core.Handler;
 import io.vertx.core.AsyncResult;
@@ -38,13 +38,11 @@ import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
 import java.util.List;
-import fr.pjthin.vertx.service.dao.UserDao;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
-import fr.pjthin.vertx.service.data.User;
+import fr.pjthin.vertx.client.UserDao;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.Handler;
+import fr.pjthin.vertx.client.data.User;
 
 /*
   Generated Proxy code - DO NOT EDIT
@@ -120,9 +118,8 @@ public class UserDaoVertxProxyHandler extends ProxyHandler {
       accessed();
       switch (action) {
 
-
         case "save": {
-          service.save(json.getJsonObject("newUser") == null ? null : new fr.pjthin.vertx.service.data.User(json.getJsonObject("newUser")), createHandler(msg));
+          service.save(json.getJsonObject("newUser") == null ? null : new fr.pjthin.vertx.client.data.User(json.getJsonObject("newUser")), createHandler(msg));
           break;
         }
         case "findAll": {
