@@ -1,45 +1,70 @@
 package fr.pjthin.vertx.service;
 
-import fr.pjthin.vertx.service.container.ServiceContainer;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
+import io.vertx.core.json.JsonObject;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import fr.pjthin.vertx.service.container.ServiceContainer;
 
 public class Launcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 
+    @Autowired
+    private ServiceContainer serviceContainer;
+
+    @Autowired
+    private Vertx vertx;
+
     public static void main(String[] args) {
-        // FIXME find another way for loading configuration (only work with eclipse)
-        VertxOptions vertxOptions = new VertxOptions(
-                ConfigurationUtils.loadJsonFromClassPath(ConfigurationUtils.CLUSTER_PATH))
-                .setClusterManager(new HazelcastClusterManager());
-        Vertx.clusteredVertx(vertxOptions, resultHandler -> {
-            if (resultHandler.succeeded()) {
-                startServices(resultHandler.result());
-            } else {
-                LOGGER.error("Failed creating Vertx clustered: " + resultHandler.cause().getMessage(),
-                        resultHandler.cause());
-            }
-        });
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+        Launcher launcher = context.getBean(Launcher.class);
+        launcher.start();
     }
 
-    private static void startServices(final Vertx vertx) {
+    @PostConstruct
+    public void start() {
         LOGGER.info("Starting services...");
-
-        // FIXME find another way for loading configuration (only work with eclipse)
-        ConfigurationUtils.loadJsonFromClassPathAndPutConfiguration(vertx, ConfigurationUtils.MONGODB_PATH,
-                ConfigurationUtils.MONGODB);
-        ServiceContainer container = new ServiceContainer("fr.pjthin.vertx.service");
-        vertx.deployVerticle(container, complete -> {
-            if (complete.succeeded()) {
-                LOGGER.info("Services started.");
-            } else {
-                LOGGER.error("Failed starting services: " + complete.cause().getMessage(), complete.cause());
-            }
-        });
     }
 
+    @PreDestroy
+    public void close() throws InterruptedException {
+        LOGGER.info("Shuting services...");
+        if (vertx != null) {
+            LOGGER.info("Shutting vertx...");
+
+            // object synchronized to get result of close operation
+            final JsonObject done = new JsonObject();
+
+            vertx.close((handler) -> {
+                if (handler.succeeded()) {
+                    done.put("result", "DONE");
+                } else {
+                    done.put("result", "FAILED");
+                    LOGGER.error("An error occurred while shuting done...", handler.cause());
+                }
+                // go back to main thread
+                synchronized (done) {
+                    done.notifyAll();
+                }
+            });
+
+            // waiting asynchronous thread 10 seconds
+            synchronized (done) {
+                done.wait(10 * 1000);
+            }
+            LOGGER.info("Shutting vertx..." + done.getString("result"));
+        }
+        if (serviceContainer != null) {
+            LOGGER.info("Shutting serviceContainer...");
+            serviceContainer.stop();
+        }
+    }
 }

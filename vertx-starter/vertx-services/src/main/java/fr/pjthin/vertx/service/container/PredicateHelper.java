@@ -5,9 +5,11 @@ import io.vertx.core.Vertx;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.stream.Stream;
 
-import org.reflections.ReflectionUtils;
+import org.springframework.context.ApplicationContext;
 
 public class PredicateHelper {
 
@@ -23,17 +25,19 @@ public class PredicateHelper {
                 && String.class.equals(field.getType()) && ADDRESS_NAME.equals(field.getName());
     }
 
-    @SuppressWarnings("unchecked")
     static boolean isInterfaceWithProxyGenAnnotationAndAddressConstante(Class<?> clazz) {
         return clazz.isAnnotationPresent(ProxyGen.class)
-                && ReflectionUtils.getAllFields(clazz, PredicateHelper::isFieldConstanteStringNamedAddress).stream()
-                        .count() == 1;
-
+                && Stream.of(clazz.getFields()).filter(PredicateHelper::isFieldConstanteStringNamedAddress).count() == 1;
     }
 
     static boolean isConstructorWithVertxArgument(Constructor<?> constructor) {
         int paramterCount = constructor.getParameterCount();
         Class<?>[] parameterTypes = constructor.getParameterTypes();
-        return paramterCount == 1 && Vertx.class.equals(parameterTypes[0]);
+        return paramterCount == 2 && Vertx.class.equals(parameterTypes[0])
+                && ApplicationContext.class.equals(parameterTypes[1]);
+    }
+
+    static boolean isMethodPublicAndNotStatic(Method method) {
+        return Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers());
     }
 }

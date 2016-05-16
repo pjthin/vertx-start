@@ -1,15 +1,17 @@
 package fr.pjthin.vertx.service.dao;
 
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
+import io.vertx.ext.mongo.MongoClient;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.pjthin.vertx.client.UserDao;
 import fr.pjthin.vertx.client.UserDaoVertxEBProxy;
@@ -28,14 +30,13 @@ import fr.pjthin.vertx.service.container.DeployServiceProxy;
  * @author Pidji
  */
 @DeployServiceProxy
-public class UserDaoImpl extends AbstractDaoSupport implements UserDao {
+public class UserDaoImpl extends AbstractVerticle implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
     private static final String USER_COLLECTION = "users";
 
-    public UserDaoImpl(Vertx vertx) {
-        super(vertx);
-    }
+    @Autowired
+    private MongoClient mongoClient;
 
     @Override
     public void save(final User newUser, Handler<AsyncResult<String>> complete) {
