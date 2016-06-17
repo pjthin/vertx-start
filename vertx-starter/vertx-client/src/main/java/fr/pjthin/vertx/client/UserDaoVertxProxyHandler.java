@@ -132,6 +132,16 @@ public class UserDaoVertxProxyHandler extends ProxyHandler {
          });
           break;
         }
+        case "findUserByLogin": {
+          service.findUserByLogin((java.lang.String)json.getValue("login"), res -> {
+            if (res.failed()) {
+              msg.fail(-1, res.cause().getMessage());
+            } else {
+              msg.reply(res.result() == null ? null : res.result().toJson());
+            }
+         });
+          break;
+        }
         case "close": {
           service.close();
           close();

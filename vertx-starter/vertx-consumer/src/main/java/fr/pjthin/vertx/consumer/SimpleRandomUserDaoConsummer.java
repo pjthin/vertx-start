@@ -8,6 +8,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 
 import java.util.Random;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -26,6 +27,14 @@ public class SimpleRandomUserDaoConsummer {
                         // get a proxy everywhere on the evenbus
                 UserDao dao = UserDao.getProxy(vertx);
 
+                dao.save(getDefaultUser(), complete -> {
+                    if (complete.succeeded()) {
+                        LOGGER.info("default user saved with id=" + complete.result());
+                    } else {
+                        LOGGER.error(complete.cause().getMessage(), complete.cause());
+                    }
+                });
+
                 // every 500ms save a random user
                 final long periodicId = vertx.setPeriodic(500, h -> {
                     dao.save(generateRandomUser(), complete -> {
@@ -40,6 +49,13 @@ public class SimpleRandomUserDaoConsummer {
                 // after 10s cancel saving random user, show all inserted user, end vertx
                 vertx.setTimer(10000, h -> {
                     vertx.cancelTimer(periodicId);
+                    dao.findUserByLogin(DEFAULT_LOGIN_USER, complete -> {
+                        if (complete.succeeded()) {
+                            Stream.of(complete.result()).map(User::toString).forEach(LOGGER::info);
+                        } else {
+                            LOGGER.error(complete.cause().getMessage(), complete.cause());
+                        }
+                    });
                     dao.findAll(complete -> {
                         if (complete.succeeded()) {
                             complete.result().stream().map(User::toString).forEach(LOGGER::info);
@@ -61,5 +77,12 @@ public class SimpleRandomUserDaoConsummer {
         return new User().setId(Math.abs(R.nextInt())).setGender(R.nextInt() % 2 == 0 ? Gender.MALE : Gender.FEMALE)
                 .setLogin("user" + Math.abs(R.nextInt()))
                 .setCryptedPasswd(RandomStringUtils.randomAlphanumeric(Math.abs(R.nextInt()) % 13));
+    }
+
+    private static final String DEFAULT_LOGIN_USER = "myLogin";
+
+    private static User getDefaultUser() {
+        return new User().setId(1).setGender(Gender.MALE).setLogin(DEFAULT_LOGIN_USER)
+                .setCryptedPasswd("myCryptedPasswd");
     }
 }

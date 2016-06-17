@@ -93,6 +93,24 @@ public class UserDaoVertxEBProxy implements UserDao {
     });
   }
 
+  public void findUserByLogin(String login, Handler<AsyncResult<User>> complete) {
+    if (closed) {
+      complete.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
+    }
+    JsonObject _json = new JsonObject();
+    _json.put("login", login);
+    DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
+    _deliveryOptions.addHeader("action", "findUserByLogin");
+    _vertx.eventBus().<JsonObject>send(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        complete.handle(Future.failedFuture(res.cause()));
+      } else {
+        complete.handle(Future.succeededFuture(res.result().body() == null ? null : new User(res.result().body())));
+                      }
+    });
+  }
+
   public void close() {
     if (closed) {
       throw new IllegalStateException("Proxy is closed");

@@ -41,6 +41,8 @@ public interface UserDao {
 
     void findAll(Handler<AsyncResult<List<User>>> complete);
 
+    void findUserByLogin(String login, Handler<AsyncResult<User>> complete);
+
     /**
      * Close method
      */
