@@ -39,9 +39,33 @@ public interface UserDao {
      */
     void save(User newUser, Handler<AsyncResult<String>> complete);
 
+    /**
+     * Get all saved users.
+     * 
+     * @param complete
+     *            handler when getting data is done
+     */
     void findAll(Handler<AsyncResult<List<User>>> complete);
 
+    /**
+     * Find user by login.
+     * 
+     * @param login
+     *            the login
+     * @param complete
+     *            handler when data is retrieve
+     */
     void findUserByLogin(String login, Handler<AsyncResult<User>> complete);
+
+    /**
+     * Delete a user by login.
+     * 
+     * @param login
+     *            the login
+     * @param complete
+     *            handler when user is deleted
+     */
+    void deleteByLogin(String login, Handler<AsyncResult<Void>> complete);
 
     /**
      * Close method

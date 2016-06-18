@@ -142,6 +142,10 @@ public class UserDaoVertxProxyHandler extends ProxyHandler {
          });
           break;
         }
+        case "deleteByLogin": {
+          service.deleteByLogin((java.lang.String)json.getValue("login"), createHandler(msg));
+          break;
+        }
         case "close": {
           service.close();
           close();

@@ -51,7 +51,7 @@ public class UserDaoImpl extends AbstractVerticle implements UserDao {
         mongoClient.find(
                 USER_COLLECTION,
                 User.ALL,
-                (h) -> {
+                h -> {
                     if (h.succeeded()) {
                         complete.handle(Future.succeededFuture(h.result().stream().map((json) -> new User(json))
                                 .collect(Collectors.toList())));
@@ -65,13 +65,19 @@ public class UserDaoImpl extends AbstractVerticle implements UserDao {
     public void findUserByLogin(String login, Handler<AsyncResult<User>> complete) {
         LOGGER.debug("findUserByLogin(..)");
         // set fields to null for getting all data
-        mongoClient.findOne(USER_COLLECTION, new JsonObject().put("login", login), null, (h) -> {
+        mongoClient.findOne(USER_COLLECTION, new JsonObject().put("login", login), null, h -> {
             if (h.succeeded()) {
                 complete.handle(Future.succeededFuture(new User(h.result())));
             } else {
                 complete.handle(Future.failedFuture(h.cause()));
             }
         });
+    }
+
+    @Override
+    public void deleteByLogin(String login, Handler<AsyncResult<Void>> complete) {
+        LOGGER.debug("deleteByLogin(..)");
+        mongoClient.removeOne(USER_COLLECTION, new JsonObject().put("login", login), complete);
     }
 
     @Override
