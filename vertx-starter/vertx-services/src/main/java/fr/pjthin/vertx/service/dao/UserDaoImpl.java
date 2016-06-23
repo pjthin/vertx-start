@@ -2,13 +2,10 @@ package fr.pjthin.vertx.service.dao;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.mongo.MongoClient;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +15,7 @@ import fr.pjthin.vertx.client.UserDao;
 import fr.pjthin.vertx.client.UserDaoVertxEBProxy;
 import fr.pjthin.vertx.client.UserDaoVertxProxyHandler;
 import fr.pjthin.vertx.client.data.User;
+import fr.pjthin.vertx.mongo.MongoClientDataWrapper;
 import fr.pjthin.vertx.service.Launcher;
 import fr.pjthin.vertx.service.container.DeployServiceProxy;
 
@@ -37,47 +35,31 @@ public class UserDaoImpl extends AbstractVerticle implements UserDao {
     private static final String USER_COLLECTION = "users";
 
     @Autowired
-    private MongoClient mongoClient;
+    private MongoClientDataWrapper<User> mongoClientUser;
 
     @Override
     public void save(final User newUser, Handler<AsyncResult<String>> complete) {
         LOGGER.debug(String.format("Saving %s", newUser.toJson()));
-        mongoClient.save(USER_COLLECTION, newUser.toJson(), complete);
+        mongoClientUser.save(USER_COLLECTION, newUser, complete);
     }
 
     @Override
     public void findAll(Handler<AsyncResult<List<User>>> complete) {
         LOGGER.debug("findAll(..)");
-        mongoClient.find(
-                USER_COLLECTION,
-                User.ALL,
-                h -> {
-                    if (h.succeeded()) {
-                        complete.handle(Future.succeededFuture(h.result().stream().map((json) -> new User(json))
-                                .collect(Collectors.toList())));
-                    } else {
-                        complete.handle(Future.failedFuture(h.cause()));
-                    }
-                });
+        mongoClientUser.find(USER_COLLECTION, User.ALL, complete);
     }
 
     @Override
     public void findUserByLogin(String login, Handler<AsyncResult<User>> complete) {
         LOGGER.debug("findUserByLogin(..)");
         // set fields to null for getting all data
-        mongoClient.findOne(USER_COLLECTION, new JsonObject().put("login", login), null, h -> {
-            if (h.succeeded()) {
-                complete.handle(Future.succeededFuture(new User(h.result())));
-            } else {
-                complete.handle(Future.failedFuture(h.cause()));
-            }
-        });
+        mongoClientUser.findOne(USER_COLLECTION, new JsonObject().put("login", login), null, complete);
     }
 
     @Override
     public void deleteByLogin(String login, Handler<AsyncResult<Void>> complete) {
         LOGGER.debug("deleteByLogin(..)");
-        mongoClient.removeOne(USER_COLLECTION, new JsonObject().put("login", login), complete);
+        mongoClientUser.removeOne(USER_COLLECTION, new JsonObject().put("login", login), complete);
     }
 
     @Override

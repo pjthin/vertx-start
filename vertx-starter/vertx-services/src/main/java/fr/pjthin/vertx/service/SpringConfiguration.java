@@ -1,5 +1,7 @@
 package fr.pjthin.vertx.service;
 
+import fr.pjthin.vertx.client.data.User;
+import fr.pjthin.vertx.mongo.MongoClientDataWrapper;
 import fr.pjthin.vertx.service.container.DeployServicePostProcessor;
 import fr.pjthin.vertx.service.container.ListProxyfiedService;
 import fr.pjthin.vertx.service.container.ServiceContainer;
@@ -102,6 +104,11 @@ public class SpringConfiguration {
     @Bean
     public MongoClient mongoClient(Vertx vertx, JsonObject mongodbConfiguration) {
         return MongoClient.createShared(vertx, mongodbConfiguration, "vertx-services-pool");
+    }
+
+    @Bean
+    public MongoClientDataWrapper<User> mongoClientUser(MongoClient mongoClient) {
+        return MongoClientDataWrapper.getInstance(User.class, mongoClient);
     }
 
     /**
