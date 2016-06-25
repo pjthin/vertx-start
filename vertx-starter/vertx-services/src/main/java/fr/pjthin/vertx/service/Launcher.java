@@ -3,40 +3,41 @@ package fr.pjthin.vertx.service;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import fr.pjthin.vertx.service.container.ServiceContainer;
+import org.springframework.context.support.AbstractApplicationContext;
 
 public class Launcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 
-    @Autowired
-    private ServiceContainer serviceContainer;
-
-    @Autowired
     private Vertx vertx;
 
-    public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-        Launcher launcher = context.getBean(Launcher.class);
-        launcher.start();
+    private ApplicationContext context;
+
+    public static void main(String[] args) throws InterruptedException {
+        Launcher l = new Launcher();
+        l.start();
+
+        // TODO how to externalize shutdown
+        // l.close();
     }
 
-    @PostConstruct
     public void start() {
-        LOGGER.info("Starting services...");
+        LOGGER.info("Starting Application...");
+        this.context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+        this.vertx = context.getBean(Vertx.class);
     }
 
-    @PreDestroy
     public void close() throws InterruptedException {
-        LOGGER.info("Shuting services...");
+        LOGGER.info("Shuting down Application...");
+
+        // closing context
+        LOGGER.info("Shuting down context...");
+        ((AbstractApplicationContext) context).close();
+        LOGGER.info("Shuting down context...DONE");
+
         if (vertx != null) {
             LOGGER.info("Shutting vertx...");
 
@@ -56,15 +57,11 @@ public class Launcher {
                 }
             });
 
-            // waiting asynchronous thread 10 seconds
+            // waiting asynchronous thread 20 seconds
             synchronized (done) {
-                done.wait(10 * 1000);
+                done.wait(20 * 1000);
             }
             LOGGER.info("Shutting vertx..." + done.getString("result"));
-        }
-        if (serviceContainer != null) {
-            LOGGER.info("Shutting serviceContainer...");
-            serviceContainer.stop();
         }
     }
 }
