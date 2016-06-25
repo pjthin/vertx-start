@@ -12,6 +12,7 @@ import io.vertx.ext.mongo.UpdateOptions;
 import io.vertx.ext.mongo.WriteOption;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -25,33 +26,36 @@ import java.util.stream.Collectors;
 class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
 
     private MongoClient mongoClient;
-    private DataWrapper<T> dataWrapper;
+    private Function<T, JsonObject> toJson;
+    private Function<JsonObject, T> fromJson;
 
-    public MongoClientDataWrapperImpl(Class<T> klass, MongoClient mongoClient) {
-        this.dataWrapper = new DataWrapperImpl<T>(klass);
+    public MongoClientDataWrapperImpl(MongoClient mongoClient, Function<T, JsonObject> toJson,
+            Function<JsonObject, T> fromJson) {
         this.mongoClient = mongoClient;
+        this.toJson = toJson;
+        this.fromJson = fromJson;
     }
 
     @Override
     public MongoClient save(String collection, T document, Handler<AsyncResult<String>> resultHandler) {
-        return mongoClient.save(collection, dataWrapper.toJson(document), resultHandler);
+        return mongoClient.save(collection, toJson.apply(document), resultHandler);
     }
 
     @Override
     public MongoClient saveWithOptions(String collection, T document, WriteOption writeOption,
             Handler<AsyncResult<String>> resultHandler) {
-        return mongoClient.saveWithOptions(collection, dataWrapper.toJson(document), writeOption, resultHandler);
+        return mongoClient.saveWithOptions(collection, toJson.apply(document), writeOption, resultHandler);
     }
 
     @Override
     public MongoClient insert(String collection, T document, Handler<AsyncResult<String>> resultHandler) {
-        return mongoClient.insert(collection, dataWrapper.toJson(document), resultHandler);
+        return mongoClient.insert(collection, toJson.apply(document), resultHandler);
     }
 
     @Override
     public MongoClient insertWithOptions(String collection, T document, WriteOption writeOption,
             Handler<AsyncResult<String>> resultHandler) {
-        return mongoClient.insertWithOptions(collection, dataWrapper.toJson(document), writeOption, resultHandler);
+        return mongoClient.insertWithOptions(collection, toJson.apply(document), writeOption, resultHandler);
     }
 
     @Override
@@ -68,13 +72,13 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
 
     @Override
     public MongoClient replace(String collection, JsonObject query, T replace, Handler<AsyncResult<Void>> resultHandler) {
-        return mongoClient.replace(collection, query, dataWrapper.toJson(replace), resultHandler);
+        return mongoClient.replace(collection, query, toJson.apply(replace), resultHandler);
     }
 
     @Override
     public MongoClient replaceWithOptions(String collection, JsonObject query, T replace, UpdateOptions options,
             Handler<AsyncResult<Void>> resultHandler) {
-        return mongoClient.replaceWithOptions(collection, query, dataWrapper.toJson(replace), options, resultHandler);
+        return mongoClient.replaceWithOptions(collection, query, toJson.apply(replace), options, resultHandler);
     }
 
     @Override
@@ -84,7 +88,7 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
                 query,
                 h -> {
                     if (h.succeeded()) {
-                        resultHandler.handle(Future.succeededFuture(h.result().stream().map(dataWrapper::toData)
+                        resultHandler.handle(Future.succeededFuture(h.result().stream().map(fromJson)
                                 .collect(Collectors.toList())));
                     } else {
                         resultHandler.handle(Future.failedFuture(h.cause()));
@@ -96,7 +100,7 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
     public MongoClient findBatch(String collection, JsonObject query, Handler<AsyncResult<T>> resultHandler) {
         return mongoClient.findBatch(collection, query, h -> {
             if (h.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(dataWrapper.toData(h.result())));
+                resultHandler.handle(Future.succeededFuture(fromJson.apply(h.result())));
             } else {
                 resultHandler.handle(Future.failedFuture(h.cause()));
             }
@@ -112,7 +116,7 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
                 options,
                 h -> {
                     if (h.succeeded()) {
-                        resultHandler.handle(Future.succeededFuture(h.result().stream().map(dataWrapper::toData)
+                        resultHandler.handle(Future.succeededFuture(h.result().stream().map(fromJson)
                                 .collect(Collectors.toList())));
                     } else {
                         resultHandler.handle(Future.failedFuture(h.cause()));
@@ -125,7 +129,7 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
             Handler<AsyncResult<T>> resultHandler) {
         return mongoClient.findBatchWithOptions(collection, query, options, h -> {
             if (h.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(dataWrapper.toData(h.result())));
+                resultHandler.handle(Future.succeededFuture(fromJson.apply(h.result())));
             } else {
                 resultHandler.handle(Future.failedFuture(h.cause()));
             }
@@ -137,7 +141,7 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
             Handler<AsyncResult<T>> resultHandler) {
         return mongoClient.findOne(collection, query, fields, h -> {
             if (h.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(dataWrapper.toData(h.result())));
+                resultHandler.handle(Future.succeededFuture(fromJson.apply(h.result())));
             } else {
                 resultHandler.handle(Future.failedFuture(h.cause()));
             }
@@ -190,7 +194,7 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
     public MongoClient runCommand(String commandName, JsonObject command, Handler<AsyncResult<T>> resultHandler) {
         return mongoClient.runCommand(commandName, command, h -> {
             if (h.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(dataWrapper.toData(h.result())));
+                resultHandler.handle(Future.succeededFuture(fromJson.apply(h.result())));
             } else {
                 resultHandler.handle(Future.failedFuture(h.cause()));
             }
@@ -208,7 +212,7 @@ class MongoClientDataWrapperImpl<T> implements MongoClientDataWrapper<T> {
             Handler<AsyncResult<T>> resultHandler) {
         return mongoClient.distinctBatch(collection, fieldName, resultClassname, h -> {
             if (h.succeeded()) {
-                resultHandler.handle(Future.succeededFuture(dataWrapper.toData(h.result())));
+                resultHandler.handle(Future.succeededFuture(fromJson.apply(h.result())));
             } else {
                 resultHandler.handle(Future.failedFuture(h.cause()));
             }

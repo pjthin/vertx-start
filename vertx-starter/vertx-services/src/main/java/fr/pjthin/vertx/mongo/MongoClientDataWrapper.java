@@ -10,6 +10,7 @@ import io.vertx.ext.mongo.UpdateOptions;
 import io.vertx.ext.mongo.WriteOption;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Wrapper of {@link MongoClient} which use &lt;T> instead of {@link JsonObject} when it's possible.
@@ -21,8 +22,38 @@ import java.util.List;
  */
 public interface MongoClientDataWrapper<T> {
 
-    static <S> MongoClientDataWrapper<S> getInstance(Class<S> klass, MongoClient mongoClient) {
-        return new MongoClientDataWrapperImpl<S>(klass, mongoClient);
+    /**
+     * Get {@link MongoClientDataWrapper} using reflection to provide a fromJson function and a toJson function (see
+     * {@link MongoClientDataWrapper#getInstance(MongoClient, Function, Function)}).
+     * <p>
+     * For that the POJO should have :
+     * <ul>
+     * <li>a contructor with only argument {@link JsonObject}
+     * <li>a method without argument and return a {@link JsonObject}
+     * </ul>
+     * 
+     * @param klass
+     * @param mongoClient
+     * @return
+     */
+    static <S> MongoClientDataWrapper<S> getInstance(MongoClient mongoClient, Class<S> klass) {
+        return new MongoClientDataWrapperImpl<>(mongoClient, new ToJsonMethod<>(klass), new FromJsonConstructor<>(
+                klass));
+    }
+
+    /**
+     * Get {@link MongoClientDataWrapper}.
+     * <p>
+     * The function provided will be called to map the POJO to {@link JsonObject} and vice-vers-ça.
+     * 
+     * @param mongoClient
+     * @param toJson
+     * @param fromJson
+     * @return
+     */
+    static <S> MongoClientDataWrapper<S> getInstance(MongoClient mongoClient, Function<S, JsonObject> toJson,
+            Function<JsonObject, S> fromJson) {
+        return new MongoClientDataWrapperImpl<>(mongoClient, toJson, fromJson);
     }
 
     MongoClient save(String collection, T document, Handler<AsyncResult<String>> resultHandler);

@@ -8,12 +8,12 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-class ContructorJsonObject<T> implements Function<JsonObject, T> {
+class FromJsonConstructor<T> implements Function<JsonObject, T> {
 
     private Constructor<T> constructor;
 
     @SuppressWarnings("unchecked")
-    public ContructorJsonObject(Class<T> klass) {
+    public FromJsonConstructor(Class<T> klass) {
         Optional<Constructor<?>> constructor = getJsonConstructor(klass);
         this.constructor = (Constructor<T>) constructor.orElseThrow(() -> {
             throw new RuntimeException(String.format("Fail to find constructor for %s", klass));

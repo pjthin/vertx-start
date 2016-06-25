@@ -30,11 +30,6 @@ public class SpringConfiguration {
     private static final long WAITING_VERTX_TIMEOUT = 20 * 1000;
 
     @Bean
-    public Launcher launcher() {
-        return new Launcher();
-    }
-
-    @Bean
     public ClusterManager clusterManager() {
         return new HazelcastClusterManager();
     }
@@ -108,7 +103,10 @@ public class SpringConfiguration {
 
     @Bean
     public MongoClientDataWrapper<User> mongoClientUser(MongoClient mongoClient) {
-        return MongoClientDataWrapper.getInstance(User.class, mongoClient);
+        // if you want to use reflection
+        // return MongoClientDataWrapper.getInstance(mongoClient, User.class);
+        // but method already exists so just pass them
+        return MongoClientDataWrapper.getInstance(mongoClient, User::toJson, User::new);
     }
 
     /**
