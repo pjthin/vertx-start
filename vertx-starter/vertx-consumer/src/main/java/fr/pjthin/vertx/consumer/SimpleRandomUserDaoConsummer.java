@@ -1,5 +1,11 @@
 package fr.pjthin.vertx.consumer;
 
+import java.util.Random;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.pjthin.vertx.client.UserDao;
 import fr.pjthin.vertx.client.data.Gender;
 import fr.pjthin.vertx.client.data.User;
@@ -7,12 +13,6 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
-
-import java.util.Random;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SimpleRandomUserDaoConsummer {
 

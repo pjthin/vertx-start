@@ -78,6 +78,11 @@
 			<artifactId>vertx-client</artifactId>
 			<version>${fr.pjthin.vertx.client.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fr.pjthin</groupId>
+			<artifactId>vertx-container</artifactId>
+			<version>${fr.pjthin.vertx.client.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>vertx-services</finalName>

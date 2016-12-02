@@ -1,4 +1,4 @@
-package fr.pjthin.vertx.service.container;
+package fr.pjthin.vertx.container.core;
 
 public class ServiceContainerException extends RuntimeException {
     /**

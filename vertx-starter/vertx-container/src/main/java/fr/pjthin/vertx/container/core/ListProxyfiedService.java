@@ -1,6 +1,4 @@
-package fr.pjthin.vertx.service.container;
-
-import io.vertx.codegen.annotations.Fluent;
+package fr.pjthin.vertx.container.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +12,9 @@ import java.util.stream.Stream;
  * 
  * @author Pidji
  */
-public class ListProxyfiedService {
+final class ListProxyfiedService {
 
-    private List<ProxyfiedService> proxyfiedServices;
+    private final List<ProxyfiedService> proxyfiedServices;
 
     public ListProxyfiedService() {
         proxyfiedServices = new ArrayList<>();
@@ -34,7 +32,6 @@ public class ListProxyfiedService {
      * @throws ServiceContainerException
      *             if failed to add service
      */
-    @Fluent
     public ListProxyfiedService addProxyfiedService(Object proxyfiedService) {
         Class<?> clazz = proxyfiedService.getClass();
 
@@ -65,8 +62,12 @@ public class ListProxyfiedService {
                     PredicateHelper.ADDRESS_NAME), e);
         }
 
-        proxyfiedServices.add(new ProxyfiedService().setAddress(address).setService(proxyfiedService)
-                .setInterfaze(interfaceClass));
+		DeployServiceProxy deployServiceAnnotation = clazz.getDeclaredAnnotation(DeployServiceProxy.class);
+		
+		boolean autoDeployVerticle = deployServiceAnnotation.autoDeployVerticle();
+
+		proxyfiedServices.add(new ProxyfiedService().setAddress(address).setService(proxyfiedService)
+                .setInterfaze(interfaceClass).setAutoDeployVerticle(autoDeployVerticle));
 
         return this;
     }
